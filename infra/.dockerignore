@@ -1,0 +1,28 @@
+# node_modules는 로컬에서 빌드 안 쓰므로 제외
+node_modules
+npm-debug.log
+yarn-error.log
+
+# 빌드 산출물 제외
+.next
+out
+dist
+
+# 환경 변수 파일
+.env
+.env.local
+.env.*.local
+
+# Git 및 CI 설정
+.git
+.gitignore
+.github
+
+# Docker 자체 파일 제외 (필요에 따라)
+Dockerfile
+docker-compose.yml
+infra
+
+# OS별 파일
+.DS_Store
+Thumbs.db
