@@ -5,7 +5,7 @@ RUN apk add --no-cache libc6-compat
 # 의존성 설치 단계
 FROM base AS deps
 WORKDIR /next/app
-COPY package.json yarn.lock ./
+COPY next/package.json next/yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # 빌드 단계
