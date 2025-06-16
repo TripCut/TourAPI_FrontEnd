@@ -6,13 +6,13 @@ RUN apk add --no-cache libc6-compat
 FROM base AS deps
 WORKDIR /app
 COPY next/package.json next/yarn.lock ./
+COPY next ./
 RUN yarn install --frozen-lockfile
 
 # 빌드 단계
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY next/ ./
+COPY --from=deps /app ./
 RUN yarn build
 
 # 실행 단계
@@ -20,10 +20,8 @@ FROM base AS runner
 WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && adduser -u 1001 -S nextjs -G nodejs
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder /app ./
 
 USER nextjs
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["yarn", "start"]
