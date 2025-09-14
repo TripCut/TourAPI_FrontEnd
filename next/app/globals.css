@@ -9,7 +9,13 @@
   --color-primary-active: #2941e0;
   --color-on-primary: #ffffff;
 
-  --color-border: rgba(0,0,0,0.10);
+  /* App design tokens mapped from spec */
+  --primary-color: #3551f2;
+  --secondary-color: #f0f2f5;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+
+  --color-border: rgba(0, 0, 0, 0.1);
   --radius-md: 10px;
   --radius-lg: 12px;
   --shadow-elev-1: 0 6px 0 #2b3fcc;
@@ -24,9 +30,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #ffffff;
     --foreground: #ededed;
-    --color-border: rgba(255,255,255,0.14);
+    --color-border: rgba(255, 255, 255, 0.14);
   }
 }
 
@@ -41,7 +47,10 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-img, svg, video, canvas {
+img,
+svg,
+video,
+canvas {
   max-width: 100%;
   height: auto;
 }
