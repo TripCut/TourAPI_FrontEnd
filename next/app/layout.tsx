@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "../components/system/Toast";
+import { AuthProvider } from "../lib/hooks/useAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,11 +49,13 @@ export default function RootLayout({
       >
         <div id="portal-root" />
         <ToastProvider>
-          <div className="flex min-h-dvh flex-col">
-            <main className="flex-1 w-full mx-auto max-w-screen-sm">
-              {children}
-            </main>
-          </div>
+          <AuthProvider>
+            <div className="flex min-h-dvh flex-col">
+              <main className="flex-1 w-full mx-auto max-w-screen-sm px-4 sm:px-6 md:px-8">
+                {children}
+              </main>
+            </div>
+          </AuthProvider>
         </ToastProvider>
       </body>
     </html>
