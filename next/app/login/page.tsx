@@ -1,4 +1,28 @@
+"use client";
+import { useState } from "react";
+
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+
+  const handleKakaoLogin = async () => {
+    try {
+      setLoading(true);
+      
+      // 1. 카카오 로그인 URL 가져오기
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/auth/login/kakao`);
+      const kakaoUrl = await response.text();
+      
+      // 2. 카카오 로그인 페이지로 리다이렉트
+      window.location.href = kakaoUrl;
+      
+    } catch (error) {
+      console.error('카카오 로그인 오류:', error);
+      alert('카카오 로그인 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className="relative w-full max-w-[412px] h-[802px] mx-auto overflow-hidden -my-6"
@@ -67,7 +91,17 @@ export default function LoginPage() {
 
           {/* 카카오 로그인 버튼 (가운데 정렬) */}
           <div className="mt-14 flex w-full justify-center">
-            <img src="/assets/kakao_login.svg" alt="kakao" className="w-[340px] max-w-full" />
+            <button 
+              onClick={handleKakaoLogin}
+              disabled={loading}
+              className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <img 
+                src="/assets/kakao_login.svg" 
+                alt="kakao" 
+                className="w-[340px] max-w-full hover:opacity-90 transition-opacity" 
+              />
+            </button>
           </div>
         </div>
       </div>
