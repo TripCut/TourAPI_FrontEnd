@@ -8,7 +8,7 @@ export function LiveInfo({ stats }: { stats: PlaceDetail["stats"] }) {
           실시간 정보
         </h2>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col items-center justify-center bg-white p-4 rounded-2xl border border-gray-200 text-center shadow-sm">
           <span className="material-symbols-outlined text-4xl text-[var(--primary-color)]">
             groups
@@ -22,19 +22,24 @@ export function LiveInfo({ stats }: { stats: PlaceDetail["stats"] }) {
           <p className="text-sm text-gray-500 mt-1">평소보다 약간 붐벼요</p>
         </div>
         <div className="flex flex-col items-center justify-center bg-white p-4 rounded-2xl border border-gray-200 text-center shadow-sm">
-          <span className="material-symbols-outlined text-4xl text-yellow-500">
-            star
+          <span className="material-symbols-outlined text-4xl text-[var(--primary-color)]">
+            near_me
           </span>
           <p className="text-lg font-bold text-[var(--text-primary)] mt-2">
-            방문자 평점
-          </p>
-          <p className="text-3xl font-extrabold text-[var(--text-primary)] mt-1">
-            {stats.rating}
-            <span className="text-xl font-medium text-gray-500">/5</span>
+            여행하러 가기
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            리뷰 {stats.reviewsCount.toLocaleString()}개
+            길찾기와 코스 담기로 바로 출발!
           </p>
+          <Link
+            href="https://maps.app.goo.gl/"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--primary-color)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 sm:text-base"
+          >
+            <span className="material-symbols-outlined text-base">near_me</span>
+            길찾기
+          </Link>
         </div>
       </div>
     </section>
