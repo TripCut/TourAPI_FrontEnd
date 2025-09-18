@@ -1,4 +1,4 @@
-import { getHomeData } from "../lib/home";
+import { getHomeData } from "../lib/services/home";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { SearchBar } from "../components/home/SearchBar";
 import { HeroCarousel } from "../components/home/HeroCarousel";
