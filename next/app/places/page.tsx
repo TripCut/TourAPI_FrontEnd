@@ -1,7 +1,7 @@
 import { BottomNav } from "../../components/home/BottomNav";
 import { SearchBar } from "../../components/home/SearchBar";
 import { FilterChips } from "../../components/place/FilterChips";
-import { getPlaceList } from "../../lib/place";
+import { getPlaceList } from "../../lib/services/place";
 import { PlaceRowItem } from "../../components/place/RowItem";
 type Props = { searchParams?: { q?: string; tag?: string } };
 
