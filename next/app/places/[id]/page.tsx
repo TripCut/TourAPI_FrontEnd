@@ -6,14 +6,14 @@ import {
   EnjoyCard,
   NearbyCarousel,
 } from "../../../components/place/Sections";
-import { BottomNav } from "../../../components/home/BottomNav";
 import { PlaceHeaderBar } from "../../../components/place/HeaderBar";
 import { BottomSheet } from "../../../components/system/BottomSheet";
 
-type Props = { params: { id: string } };
+type Props = { params: Promise<{ id: string }> };
 
 export default async function PlaceDetailPage({ params }: Props) {
-  const data = await getPlaceDetail(params.id);
+  const resolvedParams = await params;
+  const data = await getPlaceDetail(resolvedParams.id);
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-sm flex-col justify_between">
       <div className="flex-grow">

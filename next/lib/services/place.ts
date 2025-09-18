@@ -17,16 +17,25 @@ export async function getPlaceList(params?: {
       keyword: params?.q,
       tag: params?.tag,
       pageable: { page: (params?.page ?? 1) - 1, size: params?.pageSize ?? 20 },
-    } as any);
-    const items = (res.data?.content || []).map((l: any, idx: number) => ({
-      id: String(l.id ?? idx),
-      title: l.name,
-      address: l.address,
-      imageUrl: l.images?.[0] || "/window.svg",
-      tags: l.tags || [],
-    }));
+    });
+    const items = (res.data?.content || []).map((l: unknown, idx: number) => {
+      const location = l as {
+        id?: number;
+        name: string;
+        address?: string;
+        images?: string[];
+        tags?: string[];
+      };
+      return {
+        id: String(location.id ?? idx),
+        title: location.name,
+        address: location.address || "",
+        imageUrl: location.images?.[0] || "/window.svg",
+        tags: location.tags || [],
+      };
+    });
     return { items, total: res.data?.totalElements ?? items.length };
-  } catch (e) {
+  } catch {
     return mockGetPlaceList();
   }
 }
@@ -37,21 +46,36 @@ export async function getPlaceDetail(id: string): Promise<PlaceDetail> {
   }
   try {
     const res = await locationApi.getFilmingLocation(Number(id));
-    const l = res.data! as any;
+    const l = res.data! as {
+      id?: number;
+      name: string;
+      sceneDescription?: string;
+      description?: string;
+      images?: string[];
+    };
     let reviews: PlaceDetail["reviews"] = [];
     try {
       const rv = await locationApi.getLocationReviews(Number(id), {
         page: 0,
         size: 2,
       });
-      reviews = (rv.data?.content || []).map((r: any) => ({
-        id: String(r.id),
-        author: r.userUsername,
-        avatarUrl: "",
-        rating: r.rating,
-        visitedAt: r.createdAt,
-        text: r.content,
-      }));
+      reviews = (rv.data?.content || []).map((r: unknown) => {
+        const review = r as {
+          id: number;
+          userUsername: string;
+          rating: number;
+          createdAt: string;
+          content: string;
+        };
+        return {
+          id: String(review.id),
+          author: review.userUsername,
+          avatarUrl: "",
+          rating: review.rating,
+          visitedAt: review.createdAt,
+          text: review.content,
+        };
+      });
     } catch {}
 
     return {
@@ -63,7 +87,7 @@ export async function getPlaceDetail(id: string): Promise<PlaceDetail> {
       reviews,
       nearby: [],
     };
-  } catch (e) {
+  } catch {
     return mockGetPlaceDetail(id);
   }
 }

@@ -8,10 +8,11 @@ import { DramaRowItem } from "../../components/drama/RowItem";
 export default async function DramaIndexPage({
   searchParams,
 }: {
-  searchParams?: { q?: string; view?: string };
+  searchParams?: Promise<{ q?: string; view?: string }>;
 }) {
-  const q = searchParams?.q ?? "";
-  const view = (searchParams?.view as "list" | "card") || "list";
+  const resolvedParams = await searchParams;
+  const q = resolvedParams?.q ?? "";
+  const view = (resolvedParams?.view as "list" | "card") || "list";
   const { items } = await getDramaList({ q, page: 1, pageSize: 20 });
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-sm flex-col justify-between">
@@ -25,7 +26,7 @@ export default async function DramaIndexPage({
         <ViewTabs />
         {q && (
           <p className="px-4 mt-2 text-sm text-[var(--text-primary)]">
-            "{q}" 검색 결과
+            &ldquo;{q}&rdquo; 검색 결과
           </p>
         )}
         {view === "list" ? (

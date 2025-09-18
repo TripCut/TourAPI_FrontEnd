@@ -10,7 +10,7 @@ export async function getHomeData(): Promise<HomeResponse> {
   try {
     const res = await apiClient.get<HomeResponse>("/api/v1/home");
     return res.data!;
-  } catch (error) {
+  } catch {
     return mockGetHomeData();
   }
 }

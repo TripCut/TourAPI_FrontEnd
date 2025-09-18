@@ -3,11 +3,12 @@ import { SearchBar } from "../../components/home/SearchBar";
 import { FilterChips } from "../../components/place/FilterChips";
 import { getPlaceList } from "../../lib/services/place";
 import { PlaceRowItem } from "../../components/place/RowItem";
-type Props = { searchParams?: { q?: string; tag?: string } };
+type Props = { searchParams?: Promise<{ q?: string; tag?: string }> };
 
 export default async function PlacesPage({ searchParams }: Props) {
-  const q = searchParams?.q ?? "";
-  const tag = searchParams?.tag ?? "";
+  const resolvedParams = await searchParams;
+  const q = resolvedParams?.q ?? "";
+  const tag = resolvedParams?.tag ?? "";
   const { items } = await getPlaceList({ q, tag, page: 1, pageSize: 20 });
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-sm flex-col justify-between">

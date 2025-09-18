@@ -9,11 +9,12 @@ import {
 } from "../../../components/drama/Sections";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function DramaDetailPage({ params }: Props) {
-  const data = await getDramaDetail(params.id);
+  const resolvedParams = await params;
+  const data = await getDramaDetail(resolvedParams.id);
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-sm flex-col justify-between">
       <main className="flex-grow">

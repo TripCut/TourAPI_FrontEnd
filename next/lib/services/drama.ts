@@ -28,7 +28,7 @@ export async function getDramaDetail(id: string): Promise<DramaDetailResponse> {
       reviews: [],
       hashtagImages: [],
     };
-  } catch (e) {
+  } catch {
     return mockGetDramaDetail(id);
   }
 }
@@ -54,7 +54,7 @@ export async function getDramaList(params?: {
       year: Number(d.broadcastYear) || 0,
     }));
     return { items, total: res.data?.totalElements ?? items.length };
-  } catch (e) {
+  } catch {
     return mockGetDramaList();
   }
 }

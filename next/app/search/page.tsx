@@ -3,11 +3,12 @@ import { BottomNav } from "../../components/home/BottomNav";
 import { getDramaList } from "@/lib/services/drama";
 
 type Props = {
-  searchParams?: { q?: string };
+  searchParams?: Promise<{ q?: string }>;
 };
 
 export default async function SearchPage({ searchParams }: Props) {
-  const q = searchParams?.q ?? "";
+  const resolvedParams = await searchParams;
+  const q = resolvedParams?.q ?? "";
   const { items } = await getDramaList({ q, page: 1, pageSize: 20 });
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-sm flex-col justify-between">
@@ -21,7 +22,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {q && (
           <>
             <p className="mt-2 text-sm text-[var(--text-primary)]">
-              "{q}" 검색 결과
+              &ldquo;{q}&rdquo; 검색 결과
             </p>
             <ul className="mt-4 grid grid-cols-2 gap-4">
               {items.map((d) => (
