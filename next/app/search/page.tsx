@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BottomNav } from "../../components/home/BottomNav";
-import { getDramaList } from "../../lib/drama";
+import { getDramaList } from "@/lib/services/drama";
 
 type Props = {
   searchParams?: { q?: string };
