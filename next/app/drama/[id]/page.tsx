@@ -1,4 +1,4 @@
-import { getDramaDetail } from "../../../lib/drama";
+import { getDramaDetail } from "../../../lib/services/drama";
 import { TopBar } from "../../../components/drama/TopBar";
 import { DramaHero } from "../../../components/drama/Hero";
 import {
