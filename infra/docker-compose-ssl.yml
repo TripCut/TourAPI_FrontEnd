@@ -7,12 +7,9 @@ services:
     restart: always
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - /etc/letsencrypt/:/etc/letsencrypt/:ro # Let's Encrypt 인증서 (읽기 전용)
       - ./logs/nginx/:/var/log/nginx/
       - ./nginx/:/etc/nginx/conf.d/
-      - ./certbot-webroot:/var/www/certbot:ro # Certbot 인증용 디렉토리
     environment:
       - TZ=Asia/Seoul
     depends_on:
@@ -35,12 +32,3 @@ services:
       - 3000
     environment:
       - TZ=Asia/Seoul
-
-  # Certbot 컨테이너 (인증서 갱신용)
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    volumes:
-      - /etc/letsencrypt/:/etc/letsencrypt/
-      - ./certbot-webroot:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
