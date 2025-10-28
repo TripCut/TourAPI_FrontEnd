@@ -1,4 +1,4 @@
-import { apiClient, ApiResponse } from './client';
+import { apiClient, ApiResponse } from "./client";
 
 // === Request DTOs ===
 export interface LoginDto {
@@ -49,17 +49,17 @@ export interface TokenDto {
 export const authApi = {
   // 일반 로그인
   async login(credentials: LoginDto): Promise<ApiResponse<TokenDto>> {
-    return apiClient.post<TokenDto>('/api/v1/member/login', credentials);
+    return apiClient.post<TokenDto>("/api/v1/member/login", credentials);
   },
 
   // 회원가입
   async signup(userData: MemberDto): Promise<ApiResponse<MemberDto>> {
-    return apiClient.post<MemberDto>('/api/v1/member/signup', userData);
+    return apiClient.post<MemberDto>("/api/v1/member/signup", userData);
   },
 
   // 토큰 갱신
   async refreshToken(refreshToken: string): Promise<ApiResponse<TokenDto>> {
-    return apiClient.post<TokenDto>('/api/v1/refresh', { refreshToken });
+    return apiClient.post<TokenDto>("/api/v1/refresh", { refreshToken });
   },
 
   // 회원 정보 조회
@@ -69,16 +69,37 @@ export const authApi = {
 
   // 내 정보 조회
   async getMyInfo(): Promise<ApiResponse<MemberDto>> {
-    return apiClient.get<MemberDto>('/api/v1/member/list');
+    return apiClient.get<MemberDto>("/api/v1/member/list");
   },
 
   // 카카오 로그인 리다이렉트 URL 가져오기
   async getKakaoLoginUrl(): Promise<ApiResponse<string>> {
-    return apiClient.get<string>('/api/auth/login/kakao');
+    return apiClient.get<string>("/api/auth/login/kakao");
   },
 
   // 카카오 로그인 (코드로 토큰 교환)
-  async kakaoLogin(code: string): Promise<ApiResponse<BaseResponseLoginResponse>> {
-    return apiClient.post<BaseResponseLoginResponse>(`/auth/login/kakao?code=${code}`);
+  async kakaoLogin(
+    code: string
+  ): Promise<ApiResponse<BaseResponseLoginResponse>> {
+    return apiClient.post<BaseResponseLoginResponse>(
+      `/auth/login/kakao?code=${code}`
+    );
+  },
+
+  // 이메일 인증 코드 발송
+  async requestEmailVerification(email: string): Promise<ApiResponse<string>> {
+    return apiClient.post<string>(
+      `/api/v1/email/request-verification?email=${encodeURIComponent(email)}`
+    );
+  },
+
+  // 이메일 인증 코드 검증
+  async verifyEmailCode(
+    email: string,
+    code: string
+  ): Promise<ApiResponse<{ verified: boolean }>> {
+    return apiClient.get<{ verified: boolean }>(
+      `/api/v1/email/verify?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`
+    );
   },
 };
