@@ -1,82 +1,63 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { authApi } from "../../../../lib/api/auth";
+
+import { useAuth } from "../../../../lib/hooks/useAuth";
+import { authApi } from "../../../../lib/api";
+import { useToast } from "../../../../components/system/Toast";
 
 function KakaoCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const toast = useToast();
+  const { setTokensFromSocialLogin } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleKakaoCallback = async () => {
       try {
-        const code = searchParams.get('code');
-        
+        const code = searchParams.get("code");
+
         if (!code) {
-          throw new Error('카카오 로그인 코드가 없습니다.');
+          throw new Error("카카오 로그인 코드가 없습니다.");
         }
 
-        // 카카오 로그인 API 호출
         const response = await authApi.kakaoLogin(code);
-        
-        if (response.success && response.data) {
-          const { isSuccess, result, message } = response.data;
-          
-          if (isSuccess && result) {
-            const { accessToken, refreshToken, user } = result;
-            
-            // 토큰 저장
-            localStorage.setItem('auth_token', accessToken);
-            localStorage.setItem('refresh_token', refreshToken);
-            
-            // 사용자 정보 저장
-            localStorage.setItem('user_info', JSON.stringify(user));
-            
-            // 메인 페이지로 리다이렉트
-            router.push('/');
-          } else {
-            throw new Error(message || '카카오 로그인에 실패했습니다.');
-          }
-        } else {
-          throw new Error(response.message || '카카오 로그인에 실패했습니다.');
+
+        if (!response.success || !response.data) {
+          throw new Error(response.message || "카카오 로그인에 실패했습니다.");
         }
-        
-      } catch (err) {
-        console.error('카카오 로그인 콜백 오류:', err);
-        setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+
+        const { isSuccess, result, message } = response.data;
+        if (!isSuccess || !result) {
+          throw new Error(message || "카카오 로그인에 실패했습니다.");
+        }
+
+        await setTokensFromSocialLogin(result);
+        toast.show("카카오 로그인에 성공했습니다.");
+        router.replace("/");
+      } catch (error) {
+        console.error("카카오 로그인 콜백 오류", error);
+        const message =
+          error instanceof Error
+            ? error.message
+            : "카카오 로그인 중 오류가 발생했습니다.";
+        toast.show(message);
+        router.replace("/login");
       } finally {
         setLoading(false);
       }
     };
 
     handleKakaoCallback();
-  }, [searchParams, router]);
+  }, [router, searchParams, toast, setTokensFromSocialLogin]);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="text-gray-600">카카오 로그인 처리 중...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-xl mb-4">❌</div>
-          <p className="text-red-600 mb-4">{error}</p>
-          <button 
-            onClick={() => router.push('/login')}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover"
-          >
-            로그인 페이지로 돌아가기
-          </button>
         </div>
       </div>
     );
@@ -87,14 +68,16 @@ function KakaoCallbackContent() {
 
 export default function KakaoCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">로딩 중...</p>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
+            <p className="text-gray-600">로딩 중...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <KakaoCallbackContent />
     </Suspense>
   );

@@ -2,25 +2,41 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { authApi } from "../../lib/api";
+import { useToast } from "../../components/system/Toast";
+
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const toast = useToast();
 
   const handleKakaoLogin = async () => {
     try {
       setLoading(true);
+      const response = await authApi.getKakaoLoginUrl();
 
-      // 1. 카카오 로그인 URL 가져오기
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/auth/login/kakao`
-      );
-      const kakaoUrl = await response.text();
+      if (!response.success || !response.data) {
+        throw new Error(
+          response.message || "카카오 로그인 URL을 가져오지 못했습니다."
+        );
+      }
 
-      // 2. 카카오 로그인 페이지로 리다이렉트
+      const kakaoUrl = response.data.startsWith("redirect:")
+        ? response.data.replace(/^redirect:/, "")
+        : response.data;
+
+      if (!/^https?:\/\//i.test(kakaoUrl)) {
+        throw new Error("카카오 로그인 URL 형식이 올바르지 않습니다.");
+      }
+
       window.location.href = kakaoUrl;
     } catch (error) {
       console.error("카카오 로그인 오류:", error);
-      alert("카카오 로그인 중 오류가 발생했습니다.");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "카카오 로그인 중 오류가 발생했습니다.";
+      toast.show(message);
     } finally {
       setLoading(false);
     }

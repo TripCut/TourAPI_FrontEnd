@@ -4,7 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "../../components/system/BottomSheet";
-import { authApi, MemberDto } from "../../lib/api";
+import { authApi, MemberDto, SignupPayload } from "../../lib/api";
 import { useAuth } from "../../lib/hooks/useAuth";
 import { useToast } from "../../components/system/Toast";
 
@@ -133,16 +133,18 @@ function SignupContent() {
             : undefined,
       };
 
-      const response = await authApi.signup({
+      const signupPayload: SignupPayload = {
         member: memberDto,
         verificationCode: values.verificationCode,
-      });
+      };
+
+      const response = await authApi.signup(signupPayload);
 
       if (!response.success || !response.data) {
         throw new Error(response.message || "회원가입에 실패했습니다");
       }
 
-      await signup(memberDto);
+      await signup(signupPayload);
       toast.show("회원가입이 완료되었습니다");
       router.replace("/login");
     } catch (error) {

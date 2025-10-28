@@ -45,6 +45,11 @@ export interface TokenDto {
   refreshToken: string;
 }
 
+export interface SignupPayload {
+  member: MemberDto;
+  verificationCode: string;
+}
+
 // === API Functions ===
 export const authApi = {
   // 일반 로그인
@@ -53,8 +58,8 @@ export const authApi = {
   },
 
   // 회원가입
-  async signup(userData: MemberDto): Promise<ApiResponse<MemberDto>> {
-    return apiClient.post<MemberDto>("/api/v1/member/signup", userData);
+  async signup(signupPayload: SignupPayload): Promise<ApiResponse<MemberDto>> {
+    return apiClient.post<MemberDto>("/api/v1/member/signup", signupPayload);
   },
 
   // 토큰 갱신
